@@ -1,0 +1,12 @@
+{
+  // Access control lists.
+  // This is a permissive default configuration. 
+  // For production, restrict this to specific users and groups.
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["*"],
+      "dst": ["*:*"]
+    }
+  ]
+}
