@@ -10,6 +10,10 @@ db_type: "sqlite3"
 db_path: "/var/lib/headscale/db.sqlite"
 private_key_path: "/var/lib/headscale/private.key"
 
+# Noise protocol configuration (Required for Headscale 0.28.0+)
+noise:
+  private_key_path: "/var/lib/headscale/noise_private.key"
+
 # Updated DNS configuration for Headscale 0.28.0+
 dns:
   base_domain: "container.openforest.net"
