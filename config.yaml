@@ -14,6 +14,12 @@ private_key_path: "/var/lib/headscale/private.key"
 noise:
   private_key_path: "/var/lib/headscale/noise_private.key"
 
+# Tailscale IP prefixes (Required)
+prefixes:
+  v4: "100.64.0.0/10"
+  v6: "fd7a:115c:a1e0::/48"
+  allocation: sequential
+
 # Updated DNS configuration for Headscale 0.28.0+
 dns:
   base_domain: "container.openforest.net"
