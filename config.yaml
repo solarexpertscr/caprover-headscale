@@ -6,8 +6,12 @@ base_domain: "container.openforest.net"
 disable_check_for_updates: true
 derive_machine_key: true
 
-db_type: "sqlite3"
-db_path: "/var/lib/headscale/db.sqlite"
+# Database configuration
+database:
+  type: sqlite
+  sqlite:
+    path: "/var/lib/headscale/db.sqlite"
+    write_ahead_log: true
 private_key_path: "/var/lib/headscale/private.key"
 
 # Noise protocol configuration (Required for Headscale 0.28.0+)
