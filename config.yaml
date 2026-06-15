@@ -1,7 +1,7 @@
 # Headscale configuration for CapRover
 
 # The server address to listen on
-server_url: ${HEADSCALE_SERVER_URL}
+server_url: "https://solarassistant.container.solarexperts.cr"
 
 # Listen address for the gRPC server
 listen_addr: "0.0.0.0:8080"
@@ -10,7 +10,7 @@ listen_addr: "0.0.0.0:8080"
 metrics_listen_addr: "0.0.0.0:9090"
 
 # Base domain for tailnet (e.g., ts.example.com)
-base_domain: "${HEADSCALE_BASE_DOMAIN}"
+base_domain: "solarassistant.container.solarexperts.cr"
 
 # Disable check for newer versions
 disable_check_for_updates: true
@@ -33,7 +33,7 @@ tls_key_path: ""
 
 # DNS configuration
 dns_config:
-  base_domain: "${HEADSCALE_BASE_DOMAIN}"
+  base_domain: "solarassistant.container.solarexperts.cr"
   magic_dns: true
   nameservers:
     global:
