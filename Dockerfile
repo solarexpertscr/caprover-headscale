@@ -1,26 +1,23 @@
-FROM headscale/headscale:latest
-
-# Install litestream
-RUN apk add --no-cache curl
-
-# Download and install Litestream
+# Stage 1: Download and prepare litestream using Alpine
+FROM alpine:latest AS litestream-builder
+RUN apk add --no-cache curl tar
 RUN curl -L -o /tmp/litestream.tar.gz https://github.com/benbjohnson/litestream/releases/latest/download/litestream-v0.3.13-linux-amd64.tar.gz && \
     tar -xzf /tmp/litestream.tar.gz -C /tmp && \
-    mv /tmp/litestream /usr/local/bin/litestream && \
-    chmod +x /usr/local/bin/litestream && \
-    rm /tmp/litestream.tar.gz
+    mv /tmp/litestream /litestream && \
+    chmod +x /litestream
 
-# Create directory for configuration and data
-RUN mkdir -p /etc/headscale /var/lib/headscale
+# Stage 2: The final minimal Headscale image
+FROM headscale/headscale:latest
 
-# Copy configuration files
+# Copy the litestream binary from the Alpine builder stage
+COPY --from=litestream-builder /litestream /usr/local/bin/litestream
+
+# Copy configuration files 
+# (Note: COPY automatically creates parent directories like /etc/headscale)
 COPY config.yaml /etc/headscale/config.yaml
 COPY acl.hujson /etc/headscale/acl.hujson
 COPY litestream.yml /etc/litestream.yml
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
-# Make entrypoint executable
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expose the main server port (CapRover will map this)
 EXPOSE 8080
