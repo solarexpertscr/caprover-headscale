@@ -15,7 +15,15 @@ This repository contains a ready-to-deploy Headscale server configuration for Ca
    - `HEADSCALE_OIDC_CLIENT_ID`: *(Optional, if using OIDC)*
    - `HEADSCALE_OIDC_CLIENT_SECRET`: *(Optional, if using OIDC)*
 6. Click **Save & Update**.
-7. **Persistent Data**: Make sure to map `/var/lib/headscale` as a persistent directory in CapRover (App Configs > Persistent Directories).
+7. **Persistent Data & Litestream Backup**: Make sure to map `/var/lib/headscale` as a persistent directory in CapRover (App Configs > Persistent Directories). **Note:** While Litestream provides robust replication to Google Cloud Storage (GCS), keeping the persistent directory is still recommended for immediate local recovery and reducing initial download times on restart.
+
+   **Litestream Configuration (Google Cloud Storage):**
+   Add the following environment variables in CapRover (App Configs > App Configs):
+   - `LITESTREAM_BUCKET`: Your GCS bucket name (e.g., `my-headscale-backups`)
+   - `LITESTREAM_ACCESS_KEY_ID`: Your Google Cloud Storage HMAC Access Key
+   - `LITESTREAM_SECRET_ACCESS_KEY`: Your Google Cloud Storage HMAC Secret Key
+   
+   *Note: If your bucket is in a specific region, you may also need to add `LITESTREAM_REGION` (e.g., `us-central1`), though GCS often defaults correctly or uses the endpoint configuration.*
 8. **Port Mapping**: Headscale listens on `8080` by default in this Dockerfile. CapRover will handle routing to this port.
 
 ## Post-Deployment Setup
