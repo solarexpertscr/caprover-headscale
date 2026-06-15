@@ -34,6 +34,19 @@ dns:
       - "1.1.1.1"
       - "8.8.8.8"
 
+# DERP Configuration (Required in 0.28.0+)
+# We enable the embedded DERP server to guarantee a valid DERP map on startup
+derp:
+  server:
+    enabled: true
+    region_id: 999
+    region_code: "headscale"
+    region_name: "Headscale Embedded DERP"
+    stun_listen_addr: "0.0.0.0:3478"
+    private_key_path: "/var/lib/headscale/derp_server_private.key"
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+
 # Updated Policy configuration for Headscale 0.28.0+
 policy:
   path: "/etc/headscale/acl.hujson"
