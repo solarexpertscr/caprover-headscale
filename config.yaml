@@ -10,7 +10,8 @@ db_type: "sqlite3"
 db_path: "/var/lib/headscale/db.sqlite"
 private_key_path: "/var/lib/headscale/private.key"
 
-dns_config:
+# Updated DNS configuration for Headscale 0.28.0+
+dns:
   base_domain: "container.openforest.net"
   magic_dns: true
   nameservers:
@@ -18,7 +19,9 @@ dns_config:
       - "1.1.1.1"
       - "8.8.8.8"
 
-acl_policy_path: "/etc/headscale/acl.hujson"
+# Updated Policy configuration for Headscale 0.28.0+
+policy:
+  path: "/etc/headscale/acl.hujson"
 
 log:
   format: "text"
