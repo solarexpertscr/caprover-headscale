@@ -1,7 +1,7 @@
-server_url: "https://headscale.container.openforest.net"
+server_url: "https://solarassistant.container.solarexperts.cr"
 listen_addr: "0.0.0.0:8080"
 metrics_listen_addr: "0.0.0.0:9090"
-base_domain: "container.openforest.net"
+base_domain: "headscale.net"
 
 disable_check_for_updates: true
 derive_machine_key: true
