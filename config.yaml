@@ -21,8 +21,9 @@ prefixes:
   allocation: sequential
 
 # Updated DNS configuration for Headscale 0.28.0+
+# Note: base_domain must be different from server_url to prevent MagicDNS routing conflicts
 dns:
-  base_domain: "container.openforest.net"
+  base_domain: "headscale.net"
   magic_dns: true
   nameservers:
     global:
