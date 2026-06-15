@@ -1,7 +1,7 @@
 # Stage 1: Download and prepare litestream using Alpine
 FROM alpine:latest AS litestream-builder
 RUN apk add --no-cache curl tar
-RUN curl -L -o /tmp/litestream.tar.gz https://github.com/benbjohnson/litestream/releases/latest/download/litestream-v0.3.13-linux-amd64.tar.gz && \
+RUN curl -L -o /tmp/litestream.tar.gz https://github.com/benbjohnson/litestream/releases/download/v0.5.12/litestream-0.5.12-linux-x86_64.tar.gz && \
     tar -xzf /tmp/litestream.tar.gz -C /tmp && \
     mv /tmp/litestream /litestream && \
     chmod +x /litestream
