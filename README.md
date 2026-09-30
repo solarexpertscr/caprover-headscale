@@ -6,6 +6,26 @@ Pinned to **headscale v0.29.3**. To upgrade, change the tag in the `Dockerfile` 
 check the upstream release notes for config changes first — the config schema has
 moved in 0.23 (noise key), 0.28 (database block) and 0.29 (`policy.mode`).
 
+### Do not switch the base image back to `latest`
+
+This pin is deliberate. It was originally `headscale/headscale:latest`, which
+tracks the upstream `main` branch and is **not** the current release — as of
+2026-09-23 it was about two months of unreleased commits ahead of v0.29.3:
+
+| Tag | Digest | Built |
+|---|---|---|
+| `latest` | `e690ce7e5551` | 2026-09-23 |
+| `v0.29.3` | `9a4d883997cb` | 2026-07-29 |
+
+Running the `latest` build caused **Android Tailscale clients to crash on
+startup**. The v0.29.3 pin fixed it. Two consequences:
+
+- Bumping to a new **tag** is fine. Bumping back to `latest` reintroduces the
+  failure and makes rebuilds non-reproducible — a CapRover deploy can change
+  the running version without any commit.
+- If a new tag breaks Android clients, the fix is almost always the *previous*
+  tag, not `latest`. Check with a spare device before rolling out.
+
 ## Deployment Instructions
 
 1. **Create a new app** in your CapRover dashboard (e.g., `headscale`).
