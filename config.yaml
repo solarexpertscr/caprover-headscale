@@ -1,10 +1,6 @@
 server_url: "https://solarassistant.container.solarexperts.cr"
 listen_addr: "0.0.0.0:8080"
 metrics_listen_addr: "0.0.0.0:9090"
-base_domain: "headscale.net"
-
-disable_check_for_updates: true
-derive_machine_key: true
 
 # Database configuration
 database:
@@ -12,9 +8,8 @@ database:
   sqlite:
     path: "/var/lib/headscale/db.sqlite"
     write_ahead_log: true
-private_key_path: "/var/lib/headscale/private.key"
 
-# Noise protocol configuration (Required for Headscale 0.28.0+)
+# Noise protocol configuration (Required since 0.23)
 noise:
   private_key_path: "/var/lib/headscale/noise_private.key"
 
@@ -24,8 +19,10 @@ prefixes:
   v6: "fd7a:115c:a1e0::/48"
   allocation: sequential
 
-# Updated DNS configuration for Headscale 0.28.0+
-# Note: base_domain must be different from server_url to prevent MagicDNS routing conflicts
+# DNS configuration
+# Note: base_domain is read from here (dns.base_domain), not the top level.
+# It must differ from server_url, or Tailscale's MagicDNS takeover of the
+# base domain makes the headscale server and DERP unreachable.
 dns:
   base_domain: "headscale.net"
   magic_dns: true
@@ -34,8 +31,8 @@ dns:
       - "1.1.1.1"
       - "8.8.8.8"
 
-# DERP Configuration (Required in 0.28.0+)
-# We enable the embedded DERP server to guarantee a valid DERP map on startup
+# DERP configuration
+# The embedded DERP server guarantees a valid DERP map on startup.
 derp:
   server:
     enabled: true
@@ -47,8 +44,13 @@ derp:
   urls:
     - https://controlplane.tailscale.com/derpmap/default
 
-# Updated Policy configuration for Headscale 0.28.0+
+# Policy configuration
+# mode: database is required for headplane to write policies through the API
+# (PUT v1/policy returns "update is disabled for modes other than 'database'"
+# in file mode). The file below is the fallback policy used on first boot,
+# before anything has been stored in the database.
 policy:
+  mode: database
   path: "/etc/headscale/acl.hujson"
 
 log:

@@ -1,6 +1,7 @@
-FROM headscale/headscale:latest
+FROM headscale/headscale:v0.29.3
 
-# Cache buster to force fresh pull of config
+# Bumping this value forces CapRover to rebuild the image layer above, which
+# re-pulls the pinned base image and re-copies the config files.
 ARG CACHEBUST=2
 
 # Copy valid configuration files
