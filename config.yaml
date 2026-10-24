@@ -26,22 +26,27 @@ prefixes:
 dns:
   base_domain: "headscale.net"
   magic_dns: true
-  # Hand clients the filtering resolver instead of a public one, so ad blocking
-  # applies on every device while it is on the tailnet.
+  # Ad blocking for every device while it is on the tailnet, by overriding each
+  # client's local resolver.
   #
-  # Addressed by the resolver's TAILNET IP (the Home Assistant box), not its LAN
-  # address: a 192.168.68.x server is only reachable from the home network, and a
-  # phone on mobile data would then get a DNS server it cannot reach - which
-  # breaks all name resolution on that device, not just ad filtering.
+  # This headscale runs in the cloud (CapRover VPS), not on the home LAN, and it
+  # only *hands these addresses to clients* - it does not resolve on their behalf
+  # and has no route to a private network. So the addresses must be reachable
+  # from wherever a client happens to be. A public resolver works from anywhere;
+  # a 192.168.68.x address, or even a 100.64.x.x one, is only reachable while the
+  # device has a working path to that network, and because override_local_dns
+  # replaces the device's own resolver a failure there costs it all name
+  # resolution, not just ad filtering.
   #
-  # Deliberately the only listed server. A public fallback here would be used by
-  # clients alongside this one and would silently bypass filtering, which defeats
-  # the point. The trade-off is that if the resolver is down, tailnet clients
-  # have no DNS until it returns; roll back by reverting this commit.
+  # AdGuard DNS public ad-blocking pair, both listed as published for redundancy.
+  # Other variants, if ever wanted instead:
+  #   family protection  94.140.14.15  / 94.140.15.16
+  #   non-filtering      94.140.14.140 / 94.140.15.141
   override_local_dns: true
   nameservers:
     global:
-      - "100.64.0.9"
+      - "94.140.14.14"
+      - "94.140.15.15"
 
 # DERP configuration
 # The embedded DERP server guarantees a valid DERP map on startup.
