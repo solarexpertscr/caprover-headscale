@@ -26,10 +26,22 @@ prefixes:
 dns:
   base_domain: "headscale.net"
   magic_dns: true
+  # Hand clients the filtering resolver instead of a public one, so ad blocking
+  # applies on every device while it is on the tailnet.
+  #
+  # Addressed by the resolver's TAILNET IP (the Home Assistant box), not its LAN
+  # address: a 192.168.68.x server is only reachable from the home network, and a
+  # phone on mobile data would then get a DNS server it cannot reach - which
+  # breaks all name resolution on that device, not just ad filtering.
+  #
+  # Deliberately the only listed server. A public fallback here would be used by
+  # clients alongside this one and would silently bypass filtering, which defeats
+  # the point. The trade-off is that if the resolver is down, tailnet clients
+  # have no DNS until it returns; roll back by reverting this commit.
+  override_local_dns: true
   nameservers:
     global:
-      - "1.1.1.1"
-      - "8.8.8.8"
+      - "100.64.0.9"
 
 # DERP configuration
 # The embedded DERP server guarantees a valid DERP map on startup.
