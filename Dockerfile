@@ -1,8 +1,8 @@
-FROM headscale/headscale:v0.29.3
+FROM headscale/headscale:v0.29.7
 
 # Bumping this value forces CapRover to rebuild the image layer above, which
 # re-pulls the pinned base image and re-copies the config files.
-ARG CACHEBUST=2
+ARG CACHEBUST=3
 
 # Copy valid configuration files
 COPY config.yaml /etc/headscale/config.yaml

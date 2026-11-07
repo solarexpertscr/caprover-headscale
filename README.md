@@ -2,9 +2,12 @@
 
 This repository contains a ready-to-deploy Headscale server configuration for CapRover.
 
-Pinned to **headscale v0.29.3**. To upgrade, change the tag in the `Dockerfile` and
-check the upstream release notes for config changes first — the config schema has
-moved in 0.23 (noise key), 0.28 (database block) and 0.29 (`policy.mode`).
+Pinned to **headscale v0.29.7** (moved from v0.29.3 on 2026-11-07; v0.29.7 is a security
+release — see below). To upgrade, change the tag in the `Dockerfile` and check the upstream
+release notes for config changes first — the config schema has moved in 0.23 (noise key),
+0.28 (database block) and 0.29 (`policy.mode`). The 0.29.4 → 0.29.7 range did **not** change
+the config schema: the top-level and nested keys of `config-example.yaml` are identical to
+v0.29.3, so those bumps are tag-only edits.
 
 ### Do not switch the base image back to `latest`
 
@@ -12,19 +15,46 @@ This pin is deliberate. It was originally `headscale/headscale:latest`, which
 tracks the upstream `main` branch and is **not** the current release — as of
 2026-09-23 it was about two months of unreleased commits ahead of v0.29.3:
 
-| Tag | Digest | Built |
+| Tag | Digest (index) | Measured |
 |---|---|---|
-| `latest` | `e690ce7e5551` | 2026-09-23 |
-| `v0.29.3` | `9a4d883997cb` | 2026-07-29 |
+| `latest` | `11f81665e8428` | 2026-11-07 |
+| `v0.29.7` | `11f81665e8428` | 2026-11-07 |
+| `v0.29.3` | `0e7f1c6e4ce6c` | 2026-11-07 |
+
+`latest` and `v0.29.7` share a digest **today**, which is a coincidence and not a
+guarantee: whenever `main` moves ahead of the newest tag they diverge again, and a
+CapRover rebuild would then change the running version with no commit. That is why the
+tag stays even while the two coincide.
 
 Running the `latest` build caused **Android Tailscale clients to crash on
-startup**. The v0.29.3 pin fixed it. Two consequences:
+startup**. The pin fixed it. Two consequences:
 
 - Bumping to a new **tag** is fine. Bumping back to `latest` reintroduces the
   failure and makes rebuilds non-reproducible — a CapRover deploy can change
   the running version without any commit.
 - If a new tag breaks Android clients, the fix is almost always the *previous*
   tag, not `latest`. Check with a spare device before rolling out.
+
+## Why v0.29.7
+
+Upgraded from v0.29.3 on 2026-11-07. What made that jump safe to do on a live control plane:
+
+- **It is a security release.** v0.29.7 fixes findings from Anthropic's oss-scanner and the
+  Tailworm report. None are critical, but several are denial-of-service in headscale itself.
+- **No config schema change.** The top-level and nested keys of the upstream
+  `config-example.yaml` are identical between v0.29.3 and v0.29.7, so `config.yaml` here is
+  untouched.
+- **No new database migrations.** `hscontrol/db/db.go` carries the same 18 migration IDs in
+  both tags, so the SQLite schema does not move and stepping back to v0.29.3 is a tag change,
+  not a restore.
+- **Client floor unchanged** at Tailscale v1.80.0.
+
+One behaviour change to know about: v0.29.7 no longer exposes metrics to unregistered clients
+over the Noise protocol. They stay on `metrics_listen_addr` only, which is what this image
+already uses.
+
+The Tailscale v1.104.4 fixes in that advisory (SSH forwarding, session handling, Serve) live
+in `tailscaled` on the nodes, not in headscale — upgrading this image does not apply them.
 
 ## Deployment Instructions
 
@@ -89,7 +119,7 @@ change it in Headplane instead.
 ## Files Included
 
 - `captain-definition`: Tells CapRover how to build the app.
-- `Dockerfile`: Based on the official `headscale/headscale:v0.29.3` image, adds config files.
+- `Dockerfile`: Based on the official `headscale/headscale:v0.29.7` image, adds config files.
 - `config.yaml`: Headscale configuration. Values can be overridden by `HEADSCALE_`
   environment variables in CapRover.
 - `acl.hujson`: Fallback ACL policy for first boot only (see Access Control above).
